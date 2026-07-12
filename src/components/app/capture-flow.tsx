@@ -4,7 +4,13 @@ import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { Camera, Check, LocateFixed, MapPinned, Search, Sparkles } from "lucide-react";
 import { useDemoStore } from "@/store/demo-store";
-import { classifyPhotoSelection, getAvailableDemoSets, getContextDefaults, suggestProjectMatch } from "@/lib/mock";
+import {
+  classifyPhotoSelection,
+  getActionPreview,
+  getAvailableDemoSets,
+  getContextDefaults,
+  suggestProjectMatch,
+} from "@/lib/mock";
 import type { Classification, Project } from "@/lib/domain";
 
 type Step = "select" | "gps" | "classifying" | "context" | "done";
@@ -29,6 +35,8 @@ export function CaptureFlow() {
   const photoAssets = useDemoStore((state) => state.photoAssets);
   const selectProject = useDemoStore((state) => state.selectProject);
   const addTemporaryProject = useDemoStore((state) => state.addTemporaryProject);
+  const rules = useDemoStore((state) => state.rules);
+  const executeCaptureFlow = useDemoStore((state) => state.executeCaptureFlow);
 
   const demoSets = useMemo(() => getAvailableDemoSets(photoAssets), [photoAssets]);
   const [step, setStep] = useState<Step>("select");
@@ -54,6 +62,9 @@ export function CaptureFlow() {
   const projectMatch = suggestProjectMatch(chosenProjectId || selectedSet?.suggestedProjectId || "", projects);
   const matchedProject = projects.find((project) => project.id === projectMatch.projectId);
   const chosenProject = projects.find((project) => project.id === chosenProjectId) ?? matchedProject;
+  const actionPreview = classification
+    ? getActionPreview(classification, rules.filter((rule) => rule.enabled))
+    : [];
 
   useEffect(() => {
     if (step !== "classifying") {
@@ -126,6 +137,20 @@ export function CaptureFlow() {
     const tempProject = addTemporaryProject(address);
     setDuplicateMessage("");
     confirmProject(tempProject.id);
+  }
+
+  function executePlan() {
+    if (!classification || !chosenProject) {
+      return;
+    }
+
+    executeCaptureFlow({
+      projectId: chosenProject.id,
+      classification,
+      selectedPhotoIds,
+      context: contextAnswers,
+    });
+    setStep("done");
   }
 
   return (
@@ -385,17 +410,32 @@ export function CaptureFlow() {
                 />
               </label>
             </div>
-            <button type="button" onClick={() => setStep("done")} className="mt-5 touch-target w-full rounded-2xl bg-[var(--teal-500)] px-4 py-3 text-sm font-semibold text-[var(--ink-950)]">
-              Preview next-step actions
+            <button
+              type="button"
+              onClick={executePlan}
+              className="mt-5 touch-target w-full rounded-2xl bg-[var(--teal-500)] px-4 py-3 text-sm font-semibold text-[var(--ink-950)]"
+            >
+              Confirm and execute actions
             </button>
           </div>
 
           <div className="field-card rounded-[28px] p-5">
-            <div className="text-sm font-semibold">Capture snapshot</div>
+            <div className="text-sm font-semibold">5. Action plan preview</div>
             <div className="mt-3 space-y-3">
               <div className="rounded-2xl border border-white/8 bg-white/3 p-4">
                 <div className="text-kicker text-[11px] text-[var(--sand-200)]">Project</div>
                 <div className="mt-2 text-base font-semibold">{projectName(chosenProject)}</div>
+              </div>
+              <div className="space-y-3">
+                {actionPreview.map((action) => (
+                  <div key={action.id} className="rounded-2xl border border-white/8 bg-white/3 p-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="font-semibold">{action.title}</div>
+                      <span className="rounded-full bg-white/6 px-2 py-1 text-[11px]">{action.controlLevel}</span>
+                    </div>
+                    <div className="mt-2 text-sm text-[var(--sand-200)]">{action.description}</div>
+                  </div>
+                ))}
               </div>
               <div className="rounded-2xl border border-white/8 bg-white/3 p-4">
                 <div className="text-kicker text-[11px] text-[var(--sand-200)]">Selected photos</div>
@@ -417,9 +457,9 @@ export function CaptureFlow() {
           <div className="flex items-center gap-3">
             <Check className="h-6 w-6 text-[var(--teal-400)]" />
             <div>
-              <h3 className="text-xl font-semibold">Capture context complete</h3>
+              <h3 className="text-xl font-semibold">Capture executed</h3>
               <p className="mt-1 text-sm text-[var(--sand-200)]">
-                Phase 2 ends with captured context. Phase 3 turns this into an action plan, routing, escalation, and a formal audit trail.
+                Actions have been routed into the inbox, tasks, and audit trail. Use the safety demo set and leave it unacknowledged for 30 seconds to watch escalation fire.
               </p>
             </div>
           </div>

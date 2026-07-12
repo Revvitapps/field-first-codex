@@ -14,3 +14,8 @@
 
 - Represented the hero capture flow as a local client-side state machine so the full interaction works offline and remains easy to extend in later phases.
 - Used bundled SVG demo sets for deterministic repeatability and allowed generic file uploads as a looser fallback for ad hoc clicking.
+
+## Phase 3
+
+- Implemented escalation with a client-side watcher over live notifications instead of embedding timers in store state, which keeps persistence simple while still demonstrating the full 30-second chain.
+- Scoped auto-escalation to newly generated `live-note-*` safety notifications so the seeded historical data remains illustrative rather than firing immediately on page load.

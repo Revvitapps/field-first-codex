@@ -7,6 +7,7 @@ import { useDemoStore } from "@/store/demo-store";
 export function InboxView() {
   const persona = useDemoStore((state) => state.currentPersona);
   const notifications = useDemoStore((state) => state.notifications);
+  const acknowledgeNotification = useDemoStore((state) => state.acknowledgeNotification);
   const items = filterNotificationsForPersona(notifications, persona);
 
   return (
@@ -35,6 +36,15 @@ export function InboxView() {
             <div className="mt-3 text-xs text-[var(--sand-200)]">
               {formatDate(item.createdAt)} • {item.routeReason}
             </div>
+            {item.ackRequired && item.status === "pending" ? (
+              <button
+                type="button"
+                onClick={() => acknowledgeNotification(item.id)}
+                className="mt-4 rounded-xl bg-[var(--teal-500)] px-3 py-2 text-sm font-semibold text-[var(--ink-950)]"
+              >
+                Acknowledge
+              </button>
+            ) : null}
           </article>
         ))}
       </div>

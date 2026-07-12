@@ -2,8 +2,10 @@
 
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import type { DemoState, Persona, Project, Rule } from "@/lib/domain";
+import type { Classification, DemoState, Notification, Persona, Project, Rule } from "@/lib/domain";
+import type { CaptureContextInput } from "@/lib/mock";
 import { cloneSeedState } from "@/lib/seed";
+import { executeCapture } from "@/lib/mock";
 
 interface DemoStore extends DemoState {
   setPersona: (persona: Persona) => void;
@@ -12,6 +14,14 @@ interface DemoStore extends DemoState {
   resetDemoData: () => void;
   updateRule: (ruleId: string, updates: Partial<Rule>) => void;
   addTemporaryProject: (address: string) => Project;
+  executeCaptureFlow: (input: {
+    projectId: string;
+    classification: Classification;
+    selectedPhotoIds: string[];
+    context: CaptureContextInput;
+  }) => void;
+  acknowledgeNotification: (notificationId: string) => void;
+  escalateNotification: (notificationId: string) => void;
 }
 
 const initialState = cloneSeedState();
@@ -51,6 +61,110 @@ export const useDemoStore = create<DemoStore>()(
         }));
         return project;
       },
+      executeCaptureFlow: ({ projectId, classification, selectedPhotoIds, context }) =>
+        set((state) => {
+          const project = state.projects.find((entry) => entry.id === projectId) ?? state.projects[0];
+
+          if (!project) {
+            return state;
+          }
+
+          const result = executeCapture({
+            project,
+            classification,
+            selectedPhotoIds,
+            context,
+            rules: state.rules.filter((rule) => rule.enabled),
+          });
+
+          const today = new Date().toISOString().slice(0, 10);
+          const logs = state.dailyLogs.map((log) =>
+            log.projectId === project.id && log.date === today
+              ? {
+                  ...log,
+                  photoIds: [...result.captureEvent.photoIds, ...log.photoIds],
+                  captureEventIds: [result.captureEvent.id, ...log.captureEventIds],
+                }
+              : log,
+          );
+
+          return {
+            captureEvents: [result.captureEvent, ...state.captureEvents],
+            notifications: [...result.notifications, ...state.notifications],
+            tasks: [...result.tasks, ...state.tasks],
+            auditTrail: [...result.auditEntries, ...state.auditTrail],
+            dailyLogs: logs,
+          };
+        }),
+      acknowledgeNotification: (notificationId) =>
+        set((state) => ({
+          notifications: state.notifications.map((notification) =>
+            notification.id === notificationId
+              ? { ...notification, status: "acknowledged", escalatesAt: undefined }
+              : notification,
+          ),
+          auditTrail: [
+            {
+              id: `audit-ack-${Date.now()}`,
+              timestamp: new Date().toISOString(),
+              projectId:
+                state.notifications.find((notification) => notification.id === notificationId)?.projectId ??
+                state.selectedProjectId,
+              actor: "Superintendent",
+              action: "Acknowledged safety notification",
+              why: "Acknowledgement received before escalation deadline.",
+              ruleId: "rule-safety-escalation",
+              controlLevel: "mandatory human approval",
+              visibilityLevel: 1,
+            },
+            ...state.auditTrail,
+          ],
+        })),
+      escalateNotification: (notificationId) =>
+        set((state) => {
+          const original = state.notifications.find((notification) => notification.id === notificationId);
+
+          if (!original || original.status !== "pending") {
+            return state;
+          }
+
+          const escalatedNote: Notification = {
+            id: `live-note-escalated-${Date.now()}`,
+            projectId: original.projectId,
+            createdAt: new Date().toISOString(),
+            title: "Safety escalation sent to Office / PM",
+            body: `${original.title} was ignored past the acknowledgement timer.`,
+            severity: "Safety critical",
+            status: "escalated",
+            recipientRoles: ["Office / PM"],
+            visibilityLevel: 1,
+            routeReason: "30-second live demo escalation fired automatically.",
+            ackRequired: false,
+            controlLevel: "mandatory human approval",
+          };
+
+          return {
+            notifications: [
+              { ...original, status: "escalated", escalatesAt: undefined },
+              escalatedNote,
+              ...state.notifications.filter((notification) => notification.id !== notificationId),
+            ],
+            auditTrail: [
+              {
+                id: `audit-escalate-${Date.now()}`,
+                timestamp: new Date().toISOString(),
+                projectId: original.projectId,
+                actor: "FieldFirst mock engine",
+                action: "Escalated unacknowledged safety issue to Office / PM",
+                why: "Safety acknowledgement timer expired with no response.",
+                ruleId: "rule-safety-escalation",
+                controlLevel: "mandatory human approval",
+                visibilityLevel: 1,
+              },
+              ...state.auditTrail,
+            ],
+          };
+        }),
     }),
     {
       name: "field-first-demo-store",

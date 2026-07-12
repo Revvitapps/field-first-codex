@@ -18,6 +18,7 @@ export function FeedView() {
   const notifications = useDemoStore((state) => state.notifications);
   const captureEvents = useDemoStore((state) => state.captureEvents);
   const tasks = useDemoStore((state) => state.tasks);
+  const auditTrail = useDemoStore((state) => state.auditTrail);
 
   const visibleProjects = filterProjectsForPersona(projects, persona);
   const visibleNotifications = filterNotificationsForPersona(notifications, persona);
@@ -113,6 +114,24 @@ export function FeedView() {
                   <div className="mt-1 text-sm text-[var(--sand-200)]">
                     {task.assignedTo} • due {formatDate(task.dueDate)}
                   </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="field-card rounded-[28px] p-5">
+            <div className="mb-4 flex items-center gap-2">
+              <FileText className="h-5 w-5 text-[var(--amber-400)]" />
+              <h3 className="text-lg font-semibold">Audit trail</h3>
+            </div>
+            <div className="space-y-3">
+              {auditTrail.slice(0, 4).map((entry) => (
+                <div key={entry.id} className="rounded-2xl border border-white/8 bg-white/3 p-4">
+                  <div className="text-sm font-semibold">{entry.action}</div>
+                  <div className="mt-1 text-xs text-[var(--sand-200)]">
+                    {entry.actor} • {entry.controlLevel}
+                  </div>
+                  <p className="mt-2 text-sm text-[var(--sand-200)]">{entry.why}</p>
                 </div>
               ))}
             </div>

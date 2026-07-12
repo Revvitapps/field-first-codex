@@ -114,6 +114,7 @@ export interface CaptureEvent {
   photoIds: string[];
   routeRuleIds: string[];
   actionSummary: string[];
+  pendingActions?: string[];
 }
 
 export interface Notification {
@@ -129,6 +130,7 @@ export interface Notification {
   routeReason: string;
   ackRequired: boolean;
   escalatesAt?: string;
+  controlLevel?: ControlLevel;
 }
 
 export interface Task {
