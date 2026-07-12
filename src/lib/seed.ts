@@ -190,6 +190,21 @@ const photoAssets: PhotoAsset[] = [
 
 const captureEvents: CaptureEvent[] = [
   {
+    id: "capture-homeowner-1",
+    projectId: "harbor-view",
+    createdAt: "2026-07-10T17:00:00.000Z",
+    createdBy: "Office / PM",
+    classification: "progress",
+    area: "Kitchen",
+    summary: "Cabinet stain sample was approved and prep continues for installation.",
+    severity: "FYI",
+    visibilityLevel: 3,
+    syncState: "Verified on server",
+    photoIds: ["photo-drywall-1"],
+    routeRuleIds: ["rule-progress-daily-log"],
+    actionSummary: ["Shared to homeowner portal"],
+  },
+  {
     id: "capture-1",
     projectId: "harbor-view",
     createdAt: "2026-07-12T07:42:00.000Z",
@@ -237,6 +252,20 @@ const captureEvents: CaptureEvent[] = [
 ];
 
 const notifications: Notification[] = [
+  {
+    id: "note-homeowner-1",
+    projectId: "harbor-view",
+    createdAt: "2026-07-11T18:05:00.000Z",
+    title: "Plumbing work is being rescheduled",
+    body: "Today's plumbing work is being rescheduled. We are coordinating the revised sequence and will confirm whether this affects your cabinet-installation milestone.",
+    severity: "Client sensitive",
+    status: "sent",
+    recipientRoles: ["Homeowner"],
+    visibilityLevel: 3,
+    routeReason: "Curated homeowner update translated from internal field note.",
+    ackRequired: false,
+    controlLevel: "mandatory human approval",
+  },
   {
     id: "note-1",
     projectId: "birch-lane",
@@ -494,6 +523,8 @@ export const seedState: DemoState = {
   voiceDecisionTrace: [],
   lastVoiceTranscript: "",
   scheduleRiskAlert: null,
+  portalMagicLinkActive: false,
+  changeOrderApproved: false,
   offlineMode: false,
 };
 

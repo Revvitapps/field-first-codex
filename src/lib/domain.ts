@@ -249,5 +249,7 @@ export interface DemoState {
   voiceDecisionTrace: DecisionTraceStep[];
   lastVoiceTranscript: string;
   scheduleRiskAlert: ScheduleRiskAlert | null;
+  portalMagicLinkActive: boolean;
+  changeOrderApproved: boolean;
   offlineMode: boolean;
 }

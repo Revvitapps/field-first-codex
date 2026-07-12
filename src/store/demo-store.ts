@@ -25,6 +25,8 @@ interface DemoStore extends DemoState {
   attachTaskEvidence: (taskId: string, photoId: string) => void;
   completeTask: (taskId: string) => void;
   reportSchedule80Complete: (projectId: string) => void;
+  activatePortalMagicLink: () => void;
+  approveHomeownerChangeOrder: () => void;
   acknowledgeNotification: (notificationId: string) => void;
   escalateNotification: (notificationId: string) => void;
 }
@@ -261,6 +263,41 @@ export const useDemoStore = create<DemoStore>()(
             ],
           };
         }),
+      activatePortalMagicLink: () => set({ portalMagicLinkActive: true }),
+      approveHomeownerChangeOrder: () =>
+        set((state) => ({
+          changeOrderApproved: true,
+          auditTrail: [
+            {
+              id: `audit-change-order-${Date.now()}`,
+              timestamp: new Date().toISOString(),
+              projectId: "harbor-view",
+              actor: "Lena Henderson",
+              action: "Approved change order CO-12 via homeowner portal",
+              why: "Plain-language financial impact was reviewed and approved through the curated portal.",
+              controlLevel: "mandatory human approval",
+              visibilityLevel: 3,
+            },
+            ...state.auditTrail,
+          ],
+          notifications: [
+            {
+              id: `portal-approval-${Date.now()}`,
+              projectId: "harbor-view",
+              createdAt: new Date().toISOString(),
+              title: "Homeowner approved change order CO-12",
+              body: "Contract value increased by $4,850 and office review can proceed.",
+              severity: "Approval required",
+              status: "sent",
+              recipientRoles: ["Office / PM"],
+              visibilityLevel: 2,
+              routeReason: "Portal approval completed with mandatory human confirmation.",
+              ackRequired: false,
+              controlLevel: "mandatory human approval",
+            },
+            ...state.notifications,
+          ],
+        })),
       acknowledgeNotification: (notificationId) =>
         set((state) => ({
           notifications: state.notifications.map((notification) =>
@@ -351,6 +388,8 @@ export const useDemoStore = create<DemoStore>()(
         voiceDecisionTrace: state.voiceDecisionTrace,
         lastVoiceTranscript: state.lastVoiceTranscript,
         scheduleRiskAlert: state.scheduleRiskAlert,
+        portalMagicLinkActive: state.portalMagicLinkActive,
+        changeOrderApproved: state.changeOrderApproved,
         offlineMode: state.offlineMode,
       }),
     },

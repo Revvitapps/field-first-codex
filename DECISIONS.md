@@ -27,3 +27,7 @@
 ## Phase 5
 
 - Kept the schedule-risk demo scoped to Birch Lane’s known drywall chain so the “Report 80% complete” action can reliably demonstrate dependency-aware replanning without building a full scheduling engine.
+
+## Phase 6
+
+- Used the Harbor View homeowner as the fixed portal persona so the magic-link simulation, curated feed, and approval card all stay consistent regardless of the internal persona currently selected elsewhere in the app.
