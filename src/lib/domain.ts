@@ -82,6 +82,7 @@ export interface Project {
   address: string;
   projectType: string;
   homeownerName?: string;
+  pendingOfficeReview?: boolean;
   lat: number;
   lng: number;
   phase: string;

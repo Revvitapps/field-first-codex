@@ -9,3 +9,8 @@
 
 - Added `personaAccess` on projects and visibility-level filtering helpers so the persona switch has deterministic, demo-friendly behavior without inventing a backend permissions model.
 - Seeded the full domain objects early, including future-phase entities like RFIs, rules, audit entries, and message threads, to avoid schema churn across later phases.
+
+## Phase 2
+
+- Represented the hero capture flow as a local client-side state machine so the full interaction works offline and remains easy to extend in later phases.
+- Used bundled SVG demo sets for deterministic repeatability and allowed generic file uploads as a looser fallback for ad hoc clicking.
