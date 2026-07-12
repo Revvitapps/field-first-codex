@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900">
+  <rect width="1200" height="900" fill="#e1d1b4"/>
+  <rect y="620" width="1200" height="280" fill="#9a7f5f"/>
+  <rect x="180" y="220" width="820" height="420" fill="#c69a68" stroke="#6b4a2b" stroke-width="18"/>
+  <path d="M590 220v420M180 430h820" stroke="#6b4a2b" stroke-width="18"/>
+  <path d="M760 310l110 110" stroke="#dd5d4f" stroke-width="18" stroke-linecap="round"/>
+  <text x="90" y="830" fill="#121311" font-family="Arial, sans-serif" font-size="58" font-weight="700">Cabinet warranty scratch</text>
+</svg>

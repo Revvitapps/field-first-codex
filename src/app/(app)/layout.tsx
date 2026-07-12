@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Bell, Camera, FolderKanban, LayoutGrid, Sparkles } from "lucide-react";
+import { PersonaSwitch } from "@/components/app/persona-switch";
 
 const tabs = [
   { href: "/capture", label: "Capture", icon: Camera },
@@ -12,23 +13,6 @@ const tabs = [
   { href: "/inbox", label: "Inbox", icon: Bell },
   { href: "/more", label: "More", icon: LayoutGrid },
 ];
-
-function PersonaSwitch() {
-  return (
-    <label className="field-card flex items-center gap-3 rounded-full px-3 py-2 text-sm text-[var(--sand-100)]">
-      <span className="text-kicker text-[10px] text-[var(--sand-200)]">Persona</span>
-      <select
-        className="bg-transparent pr-2 text-sm text-[var(--sand-50)] outline-none"
-        defaultValue="Foreman"
-      >
-        <option className="bg-[var(--ink-900)]">Foreman</option>
-        <option className="bg-[var(--ink-900)]">Superintendent</option>
-        <option className="bg-[var(--ink-900)]">Homeowner</option>
-        <option className="bg-[var(--ink-900)]">Office / PM</option>
-      </select>
-    </label>
-  );
-}
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();

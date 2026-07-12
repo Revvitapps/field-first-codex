@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900">
+  <rect width="1200" height="900" fill="#ddd5c5"/>
+  <rect y="610" width="1200" height="290" fill="#90785b"/>
+  <rect x="180" y="140" width="830" height="470" fill="#efe8dc" stroke="#7f715f" stroke-width="20"/>
+  <path d="M430 190c70 70 130 80 190 0 55 150 170 190 260 140-60 180-250 240-450 160-110-44-166-172-126-300 18-55 58-104 126-140Z" fill="#77a2bd" fill-opacity=".58"/>
+  <text x="90" y="830" fill="#121311" font-family="Arial, sans-serif" font-size="58" font-weight="700">Water damage</text>
+</svg>

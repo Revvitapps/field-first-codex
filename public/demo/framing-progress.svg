@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900">
+  <rect width="1200" height="900" fill="#d1b38e"/>
+  <rect y="520" width="1200" height="380" fill="#8d6a49"/>
+  <g stroke="#5d3c22" stroke-width="18">
+    <path d="M140 170v500M280 130v540M420 170v500M560 145v525M700 180v490M840 145v525M980 185v485"/>
+    <path d="M120 180h930M120 360h930M120 540h930"/>
+  </g>
+  <rect x="520" y="310" width="160" height="190" fill="#9dc7df" stroke="#5d3c22" stroke-width="20"/>
+  <text x="70" y="825" fill="#121311" font-family="Arial, sans-serif" font-size="58" font-weight="700">Framing progress</text>
+</svg>

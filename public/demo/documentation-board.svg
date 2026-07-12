@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900">
+  <rect width="1200" height="900" fill="#cad5dc"/>
+  <rect x="190" y="120" width="820" height="620" rx="32" fill="#f8f5ef"/>
+  <g stroke="#2d3640" stroke-width="12">
+    <path d="M300 220h560M300 320h420M300 420h500M300 520h380"/>
+  </g>
+  <rect x="760" y="250" width="150" height="190" fill="#149d92" fill-opacity=".22" stroke="#149d92" stroke-width="12"/>
+  <text x="100" y="830" fill="#121311" font-family="Arial, sans-serif" font-size="58" font-weight="700">Documentation board</text>
+</svg>

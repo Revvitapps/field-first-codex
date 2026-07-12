@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900">
+  <rect width="1200" height="900" fill="#d7d1c4"/>
+  <rect y="600" width="1200" height="300" fill="#8e775a"/>
+  <path d="M170 630c180-90 350-70 520-10 130 45 250 52 340 8" fill="none" stroke="#dd5d4f" stroke-width="24" stroke-linecap="round"/>
+  <rect x="830" y="490" width="120" height="85" rx="12" fill="#121311"/>
+  <path d="M920 485l48-54" stroke="#121311" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="980" cy="420" r="42" fill="#efbb57" stroke="#121311" stroke-width="18"/>
+  <text x="90" y="830" fill="#121311" font-family="Arial, sans-serif" font-size="58" font-weight="700">Trip hazard cord</text>
+</svg>

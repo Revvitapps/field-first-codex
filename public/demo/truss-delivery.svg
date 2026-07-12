@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900">
+  <rect width="1200" height="900" fill="#b9d2da"/>
+  <rect y="560" width="1200" height="340" fill="#7f6b56"/>
+  <rect x="130" y="380" width="470" height="130" rx="20" fill="#2e4154"/>
+  <circle cx="220" cy="545" r="55" fill="#121311"/>
+  <circle cx="520" cy="545" r="55" fill="#121311"/>
+  <g stroke="#dd8550" stroke-width="16">
+    <path d="M670 510l70-150 70 150 70-150 70 150 70-150 70 150"/>
+  </g>
+  <text x="80" y="830" fill="#121311" font-family="Arial, sans-serif" font-size="58" font-weight="700">Roof truss delivery</text>
+</svg>

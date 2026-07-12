@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900">
+  <rect width="1200" height="900" fill="#bfd1dd"/>
+  <rect y="610" width="1200" height="290" fill="#866c50"/>
+  <g fill="#a36d35" stroke="#6b421c" stroke-width="12">
+    <rect x="190" y="350" width="230" height="160"/>
+    <rect x="470" y="320" width="230" height="190"/>
+    <rect x="750" y="360" width="230" height="150"/>
+  </g>
+  <g stroke="#6b421c" stroke-width="16">
+    <path d="M175 550h260M455 550h260M735 550h260"/>
+  </g>
+  <text x="90" y="830" fill="#121311" font-family="Arial, sans-serif" font-size="58" font-weight="700">Pallet staging</text>
+</svg>
