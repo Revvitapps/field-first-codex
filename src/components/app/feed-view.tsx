@@ -3,6 +3,7 @@
 import { ArrowRight, FileText, ShieldAlert, Sparkles } from "lucide-react";
 import { useDemoStore } from "@/store/demo-store";
 import { canSeeVisibilityLevel, filterNotificationsForPersona, filterProjectsForPersona, formatDate } from "@/lib/selectors";
+import { SyncStateBadge } from "@/components/app/sync-state-badge";
 
 const severityTone: Record<string, string> = {
   FYI: "bg-white/6 text-[var(--sand-100)]",
@@ -94,7 +95,7 @@ export function FeedView() {
                 <div key={capture.id} className="rounded-2xl border border-white/8 bg-white/3 p-4">
                   <div className="flex items-center justify-between gap-3 text-sm">
                     <span className="font-semibold capitalize">{capture.classification}</span>
-                    <span className="text-[var(--sand-200)]">{capture.syncState}</span>
+                    <SyncStateBadge state={capture.syncState} />
                   </div>
                   <p className="mt-2 text-sm leading-6 text-[var(--sand-200)]">{capture.summary}</p>
                 </div>

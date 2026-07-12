@@ -4,12 +4,14 @@ import Image from "next/image";
 import { CheckCircle2, Link as LinkIcon, Mail, MessageSquare } from "lucide-react";
 import { useDemoStore } from "@/store/demo-store";
 import { formatDate } from "@/lib/selectors";
+import { SyncStateBadge } from "@/components/app/sync-state-badge";
 
 export function HomeownerPortalView() {
   const projects = useDemoStore((state) => state.projects);
   const notifications = useDemoStore((state) => state.notifications);
   const captureEvents = useDemoStore((state) => state.captureEvents);
   const threads = useDemoStore((state) => state.threads);
+  const photoAssets = useDemoStore((state) => state.photoAssets);
   const portalMagicLinkActive = useDemoStore((state) => state.portalMagicLinkActive);
   const changeOrderApproved = useDemoStore((state) => state.changeOrderApproved);
   const activatePortalMagicLink = useDemoStore((state) => state.activatePortalMagicLink);
@@ -106,7 +108,7 @@ export function HomeownerPortalView() {
               <h2 className="text-lg font-semibold">Curated photo gallery</h2>
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 {galleryItems.map((item) => {
-                  const photo = useDemoStore.getState().photoAssets.find((asset) => asset.id === item.photoIds[0]);
+                  const photo = photoAssets.find((asset) => asset.id === item.photoIds[0]);
                   if (!photo) return null;
                   return (
                     <div key={item.id} className="rounded-2xl border border-white/8 bg-white/3 p-3">
@@ -117,7 +119,10 @@ export function HomeownerPortalView() {
                         height={220}
                         className="h-40 w-full rounded-2xl object-cover"
                       />
-                      <div className="mt-3 text-sm text-[var(--sand-200)]">{item.summary}</div>
+                      <div className="mt-3 flex items-center justify-between gap-3">
+                        <div className="text-sm text-[var(--sand-200)]">{item.summary}</div>
+                        <SyncStateBadge state={item.syncState} />
+                      </div>
                     </div>
                   );
                 })}

@@ -35,3 +35,7 @@
 ## Phase 7
 
 - Made offline sync a lightweight queue simulation over capture `syncState` values instead of building a separate job model, which is enough to demonstrate honest state labels and re-sync behavior after reconnect.
+
+## Phase 8
+
+- Kept the pitch page narrative concise and product-focused rather than reproducing the entire market brief verbatim, so the in-app story supports a live demo instead of reading like a research memo.
