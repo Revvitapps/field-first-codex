@@ -2,6 +2,7 @@ import Link from "next/link";
 
 export default function MorePage() {
   const items = [
+    { href: "/daily-logs", title: "Daily logs", body: "Logs, voice capture, and RFI suggestions." },
     { href: "/why", title: "Why this exists", body: "Pitch page and market framing." },
     { href: "/dashboard", title: "Office dashboard", body: "Health, compliance, and audit signals." },
     { href: "/rules", title: "Rule builder", body: "Control levels and routing logic." },

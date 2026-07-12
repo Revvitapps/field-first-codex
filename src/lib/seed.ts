@@ -491,6 +491,8 @@ export const seedState: DemoState = {
   auditTrail,
   rfiDrafts,
   threads,
+  voiceDecisionTrace: [],
+  lastVoiceTranscript: "",
   offlineMode: false,
 };
 

@@ -218,6 +218,12 @@ export interface MessageThread {
   }[];
 }
 
+export interface DecisionTraceStep {
+  id: string;
+  title: string;
+  detail: string;
+}
+
 export interface DemoState {
   currentPersona: Persona;
   selectedProjectId: string;
@@ -232,5 +238,7 @@ export interface DemoState {
   auditTrail: AuditEntry[];
   rfiDrafts: RfiDraft[];
   threads: MessageThread[];
+  voiceDecisionTrace: DecisionTraceStep[];
+  lastVoiceTranscript: string;
   offlineMode: boolean;
 }

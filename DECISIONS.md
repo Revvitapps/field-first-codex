@@ -19,3 +19,7 @@
 
 - Implemented escalation with a client-side watcher over live notifications instead of embedding timers in store state, which keeps persistence simple while still demonstrating the full 30-second chain.
 - Scoped auto-escalation to newly generated `live-note-*` safety notifications so the seeded historical data remains illustrative rather than firing immediately on page load.
+
+## Phase 4
+
+- Added the voice-to-log demo as a deterministic store mutation rather than freeform speech parsing so the labor extraction, RFI suggestion, and notification outcomes stay consistent during every walkthrough.

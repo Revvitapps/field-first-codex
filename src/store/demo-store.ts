@@ -20,6 +20,7 @@ interface DemoStore extends DemoState {
     selectedPhotoIds: string[];
     context: CaptureContextInput;
   }) => void;
+  runVoiceLogDemo: () => void;
   acknowledgeNotification: (notificationId: string) => void;
   escalateNotification: (notificationId: string) => void;
 }
@@ -94,6 +95,108 @@ export const useDemoStore = create<DemoStore>()(
             tasks: [...result.tasks, ...state.tasks],
             auditTrail: [...result.auditEntries, ...state.auditTrail],
             dailyLogs: logs,
+          };
+        }),
+      runVoiceLogDemo: () =>
+        set((state) => {
+          const projectId = "harbor-view";
+          const now = new Date().toISOString();
+          const transcript =
+            "We finished framing the west wall, but the window openings do not match the latest plan. Three framers were here from 7:00 to 3:30.";
+          const trace = [
+            {
+              id: "voice-trace-1",
+              title: "Transcript captured",
+              detail: transcript,
+            },
+            {
+              id: "voice-trace-2",
+              title: "Project and location extracted",
+              detail: "Matched to 115 Harbor View Drive, west wall framing zone.",
+            },
+            {
+              id: "voice-trace-3",
+              title: "Labor parsed",
+              detail: "Three framers × 8.5 hours = 25.5 labor hours.",
+            },
+            {
+              id: "voice-trace-4",
+              title: "Classification inferred",
+              detail: "Progress update with potential design conflict.",
+            },
+            {
+              id: "voice-trace-5",
+              title: "Action recommendation",
+              detail: "Draft RFI recommendation, notify superintendent, hold homeowner notification.",
+            },
+          ];
+
+          const dailyLogs = state.dailyLogs.map((log) =>
+            log.projectId === projectId && log.date === now.slice(0, 10)
+              ? {
+                  ...log,
+                  workforce: [
+                    { role: "Framers", count: 3, hours: 25.5 },
+                    ...log.workforce.filter((entry) => entry.role !== "Framers"),
+                  ],
+                  workPerformed: [
+                    "Voice log: Finished framing the west wall; flagged window opening mismatch.",
+                    ...log.workPerformed,
+                  ],
+                }
+              : log,
+          );
+
+          return {
+            dailyLogs,
+            notifications: [
+              {
+                id: `voice-note-${Date.now()}`,
+                projectId,
+                createdAt: now,
+                title: "Voice log flagged possible design conflict",
+                body: "Superintendent review requested. Homeowner-facing update remains held.",
+                severity: "Approval required",
+                status: "sent",
+                recipientRoles: ["Superintendent"],
+                visibilityLevel: 1,
+                routeReason: "Voice-to-log parser inferred design conflict from west wall framing note.",
+                ackRequired: false,
+                controlLevel: "recommendation requiring approval",
+              },
+              ...state.notifications,
+            ],
+            rfiDrafts: state.rfiDrafts.some((draft) => draft.number === "RFI-205")
+              ? state.rfiDrafts
+              : [
+                  {
+                    id: `voice-rfi-${Date.now()}`,
+                    projectId,
+                    number: "RFI-205",
+                    question:
+                      "Voice log noted that west wall window openings do not match the latest plan. Confirm dimensions before roof framing continues.",
+                    drawingRef: "A5.4 / A6.1",
+                    ballInCourt: "Axis Studio",
+                    dueDate: now.slice(0, 10),
+                  },
+                  ...state.rfiDrafts,
+                ],
+            auditTrail: [
+              {
+                id: `audit-voice-${Date.now()}`,
+                timestamp: now,
+                projectId,
+                actor: "FieldFirst mock engine",
+                action: "Processed voice log into labor, log entry, and RFI recommendation",
+                why: "Transcript referenced completed framing work and a likely design conflict.",
+                ruleId: "rule-design-rfi",
+                controlLevel: "recommendation requiring approval",
+                visibilityLevel: 1,
+              },
+              ...state.auditTrail,
+            ],
+            voiceDecisionTrace: trace,
+            lastVoiceTranscript: transcript,
           };
         }),
       acknowledgeNotification: (notificationId) =>
@@ -183,6 +286,8 @@ export const useDemoStore = create<DemoStore>()(
         auditTrail: state.auditTrail,
         rfiDrafts: state.rfiDrafts,
         threads: state.threads,
+        voiceDecisionTrace: state.voiceDecisionTrace,
+        lastVoiceTranscript: state.lastVoiceTranscript,
         offlineMode: state.offlineMode,
       }),
     },
