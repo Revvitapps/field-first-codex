@@ -27,6 +27,7 @@ interface DemoStore extends DemoState {
   reportSchedule80Complete: (projectId: string) => void;
   activatePortalMagicLink: () => void;
   approveHomeownerChangeOrder: () => void;
+  processOfflineQueue: () => void;
   acknowledgeNotification: (notificationId: string) => void;
   escalateNotification: (notificationId: string) => void;
 }
@@ -39,7 +40,16 @@ export const useDemoStore = create<DemoStore>()(
       ...initialState,
       setPersona: (currentPersona) => set({ currentPersona }),
       selectProject: (selectedProjectId) => set({ selectedProjectId }),
-      toggleOfflineMode: () => set((state) => ({ offlineMode: !state.offlineMode })),
+      toggleOfflineMode: () =>
+        set((state) => ({
+          offlineMode: !state.offlineMode,
+          captureEvents:
+            !state.offlineMode
+              ? state.captureEvents
+              : state.captureEvents.map((event) =>
+                  event.syncState === "Saved locally" ? { ...event, syncState: "Uploading" } : event,
+                ),
+        })),
       resetDemoData: () => set(cloneSeedState()),
       updateRule: (ruleId, updates) =>
         set((state) => ({
@@ -96,7 +106,13 @@ export const useDemoStore = create<DemoStore>()(
           );
 
           return {
-            captureEvents: [result.captureEvent, ...state.captureEvents],
+            captureEvents: [
+              {
+                ...result.captureEvent,
+                syncState: state.offlineMode ? "Saved locally" : result.captureEvent.syncState,
+              },
+              ...state.captureEvents,
+            ],
             notifications: [...result.notifications, ...state.notifications],
             tasks: [...result.tasks, ...state.tasks],
             auditTrail: [...result.auditEntries, ...state.auditTrail],
@@ -297,6 +313,14 @@ export const useDemoStore = create<DemoStore>()(
             },
             ...state.notifications,
           ],
+        })),
+      processOfflineQueue: () =>
+        set((state) => ({
+          captureEvents: state.captureEvents.map((event) =>
+            event.syncState === "Saved locally" || event.syncState === "Uploading"
+              ? { ...event, syncState: "Verified on server" }
+              : event,
+          ),
         })),
       acknowledgeNotification: (notificationId) =>
         set((state) => ({

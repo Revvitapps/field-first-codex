@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Bell, Camera, FolderKanban, LayoutGrid, Sparkles } from "lucide-react";
 import { EscalationWatcher } from "@/components/app/escalation-watcher";
+import { OfflineSyncWatcher } from "@/components/app/offline-sync-watcher";
 import { PersonaSwitch } from "@/components/app/persona-switch";
 
 const tabs = [
@@ -22,6 +23,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     <div className="min-h-screen pb-24">
       <div className="page-shell">
         <EscalationWatcher />
+        <OfflineSyncWatcher />
         <header className="mb-6 flex items-start justify-between gap-4 pt-2">
           <div>
             <p className="text-kicker mb-2 text-xs text-[var(--teal-400)]">FieldFirst</p>

@@ -187,7 +187,18 @@ export function getActionPreview(classification: Classification, rules: Rule[]):
   const progressRule = rules.find((rule) => rule.id === "rule-progress-daily-log");
   const designRule = rules.find((rule) => rule.id === "rule-design-rfi");
 
-  if (classification === "safety hazard" && safetyRule) {
+  if (classification === "safety hazard") {
+    if (!safetyRule) {
+      return [
+        {
+          id: "local-only",
+          title: "Hold locally only",
+          description: "Safety escalation rule is disabled, so this capture stays local and unactioned.",
+          controlLevel: "prohibited from automation",
+        },
+      ];
+    }
+
     return [
       {
         id: "attach-log",
@@ -216,7 +227,18 @@ export function getActionPreview(classification: Classification, rules: Rule[]):
     ];
   }
 
-  if (classification === "design conflict" && designRule) {
+  if (classification === "design conflict") {
+    if (!designRule) {
+      return [
+        {
+          id: "local-only",
+          title: "Store without routing",
+          description: "Design-conflict automation is disabled, so no RFI or notification will be created.",
+          controlLevel: "prohibited from automation",
+        },
+      ];
+    }
+
     return [
       {
         id: "attach-log",
@@ -273,15 +295,21 @@ export function executeCapture({
   tasks: Task[];
   auditEntries: AuditEntry[];
 } {
+  const safetyRuleEnabled = rules.some((rule) => rule.id === "rule-safety-escalation");
+  const designRuleEnabled = rules.some((rule) => rule.id === "rule-design-rfi");
   const now = new Date();
   const createdAt = now.toISOString();
   const visibilityLevel = getVisibilityLevel(context.homeownerVisibility);
   const actionPlan = getActionPreview(classification, rules);
   const ruleIds =
     classification === "safety hazard"
-      ? ["rule-safety-escalation"]
+      ? safetyRuleEnabled
+        ? ["rule-safety-escalation"]
+        : []
       : classification === "design conflict"
-        ? ["rule-design-rfi"]
+        ? designRuleEnabled
+          ? ["rule-design-rfi"]
+          : []
         : ["rule-progress-daily-log"];
 
   const severity =
@@ -325,7 +353,7 @@ export function executeCapture({
     },
   ];
 
-  if (classification === "safety hazard") {
+  if (classification === "safety hazard" && safetyRuleEnabled) {
     const escalateAt = new Date(now.getTime() + 30_000).toISOString();
     notifications.push({
       id: `live-note-${now.getTime()}-super`,
@@ -365,7 +393,7 @@ export function executeCapture({
       controlLevel: "mandatory human approval",
       visibilityLevel: 1,
     });
-  } else if (classification === "design conflict") {
+  } else if (classification === "design conflict" && designRuleEnabled) {
     notifications.push({
       id: `live-note-${now.getTime()}-design`,
       projectId: project.id,
@@ -417,6 +445,19 @@ export function executeCapture({
       routeReason: "Progress routing auto-filed to daily log.",
       ackRequired: false,
       controlLevel: "automatic with undo",
+    });
+  }
+
+  if ((classification === "safety hazard" && !safetyRuleEnabled) || (classification === "design conflict" && !designRuleEnabled)) {
+    auditEntries.push({
+      id: `audit-live-${now.getTime()}-2`,
+      timestamp: createdAt,
+      projectId: project.id,
+      actor: "FieldFirst mock engine",
+      action: "Skipped automation because the routing rule is disabled",
+      why: "Rule builder settings prohibit automated follow-up for this classification.",
+      controlLevel: "prohibited from automation",
+      visibilityLevel,
     });
   }
 

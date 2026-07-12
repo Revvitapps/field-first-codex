@@ -31,3 +31,7 @@
 ## Phase 6
 
 - Used the Harbor View homeowner as the fixed portal persona so the magic-link simulation, curated feed, and approval card all stay consistent regardless of the internal persona currently selected elsewhere in the app.
+
+## Phase 7
+
+- Made offline sync a lightweight queue simulation over capture `syncState` values instead of building a separate job model, which is enough to demonstrate honest state labels and re-sync behavior after reconnect.
