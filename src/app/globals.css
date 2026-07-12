@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+:root {
+  --sand-50: #f4efe6;
+  --sand-100: #e6dcc8;
+  --sand-200: #d7c8ab;
+  --clay-300: #b88d62;
+  --clay-500: #915a30;
+  --ink-950: #121311;
+  --ink-900: #1c1f1b;
+  --ink-800: #242823;
+  --ink-700: #343a33;
+  --teal-400: #3dd4c1;
+  --teal-500: #149d92;
+  --amber-400: #efbb57;
+  --red-500: #dd5d4f;
+  --shadow-card: 0 18px 40px rgba(0, 0, 0, 0.18);
+}
+
+@theme inline {
+  --color-background: var(--ink-950);
+  --color-foreground: var(--sand-50);
+  --font-sans: var(--font-manrope);
+  --font-mono: var(--font-space-grotesk);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background:
+    radial-gradient(circle at top left, rgba(61, 212, 193, 0.08), transparent 28%),
+    linear-gradient(180deg, #1c1f1b 0%, #121311 100%);
+}
+
+body {
+  min-height: 100vh;
+  background: transparent;
+  color: var(--sand-50);
+  font-family: var(--font-manrope), sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+select,
+input,
+textarea {
+  font: inherit;
+}
+
+::selection {
+  background: rgba(61, 212, 193, 0.3);
+}
+
+.field-card {
+  border: 1px solid rgba(230, 220, 200, 0.12);
+  background: linear-gradient(180deg, rgba(36, 40, 35, 0.95), rgba(28, 31, 27, 0.96));
+  box-shadow: var(--shadow-card);
+}
+
+.text-kicker {
+  font-family: var(--font-space-grotesk), sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.page-shell {
+  margin: 0 auto;
+  width: min(100%, 1180px);
+  padding: 1rem 1rem 6rem;
+}
+
+.touch-target {
+  min-height: 3rem;
+  min-width: 3rem;
+}
