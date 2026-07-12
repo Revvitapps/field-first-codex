@@ -23,3 +23,7 @@
 ## Phase 4
 
 - Added the voice-to-log demo as a deterministic store mutation rather than freeform speech parsing so the labor extraction, RFI suggestion, and notification outcomes stay consistent during every walkthrough.
+
+## Phase 5
+
+- Kept the schedule-risk demo scoped to Birch Lane’s known drywall chain so the “Report 80% complete” action can reliably demonstrate dependency-aware replanning without building a full scheduling engine.

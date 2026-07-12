@@ -224,6 +224,14 @@ export interface DecisionTraceStep {
   detail: string;
 }
 
+export interface ScheduleRiskAlert {
+  projectId: string;
+  title: string;
+  summary: string;
+  proposedDates: string[];
+  chain: string[];
+}
+
 export interface DemoState {
   currentPersona: Persona;
   selectedProjectId: string;
@@ -240,5 +248,6 @@ export interface DemoState {
   threads: MessageThread[];
   voiceDecisionTrace: DecisionTraceStep[];
   lastVoiceTranscript: string;
+  scheduleRiskAlert: ScheduleRiskAlert | null;
   offlineMode: boolean;
 }

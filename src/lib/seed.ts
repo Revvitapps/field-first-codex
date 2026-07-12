@@ -493,6 +493,7 @@ export const seedState: DemoState = {
   threads,
   voiceDecisionTrace: [],
   lastVoiceTranscript: "",
+  scheduleRiskAlert: null,
   offlineMode: false,
 };
 

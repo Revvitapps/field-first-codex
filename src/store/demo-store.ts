@@ -21,6 +21,10 @@ interface DemoStore extends DemoState {
     context: CaptureContextInput;
   }) => void;
   runVoiceLogDemo: () => void;
+  reassignTask: (taskId: string, assignedTo: Project["personaAccess"][number] | "Architect / Engineer") => void;
+  attachTaskEvidence: (taskId: string, photoId: string) => void;
+  completeTask: (taskId: string) => void;
+  reportSchedule80Complete: (projectId: string) => void;
   acknowledgeNotification: (notificationId: string) => void;
   escalateNotification: (notificationId: string) => void;
 }
@@ -199,6 +203,64 @@ export const useDemoStore = create<DemoStore>()(
             lastVoiceTranscript: transcript,
           };
         }),
+      reassignTask: (taskId, assignedTo) =>
+        set((state) => ({
+          tasks: state.tasks.map((task) => (task.id === taskId ? { ...task, assignedTo } : task)),
+        })),
+      attachTaskEvidence: (taskId, photoId) =>
+        set((state) => ({
+          tasks: state.tasks.map((task) =>
+            task.id === taskId
+              ? { ...task, evidencePhotoIds: Array.from(new Set([...task.evidencePhotoIds, photoId])) }
+              : task,
+          ),
+        })),
+      completeTask: (taskId) =>
+        set((state) => ({
+          tasks: state.tasks.map((task) => {
+            if (task.id !== taskId) {
+              return task;
+            }
+
+            if (task.evidenceRequired && task.evidencePhotoIds.length === 0) {
+              return { ...task, status: "blocked", summary: "Completion blocked: photo evidence required." };
+            }
+
+            return { ...task, status: "complete", summary: "Completed with evidence confirmation." };
+          }),
+        })),
+      reportSchedule80Complete: (projectId) =>
+        set((state) => {
+          const alert = {
+            projectId,
+            title: "Drywall 80% complete: inspection constraint detected",
+            summary:
+              "Drywall can report 80%, but inspection must shift before electrical trim can start.",
+            proposedDates: ["2026-07-15 at 8:00 AM", "2026-07-16 at 1:30 PM"],
+            chain: ["Drywall tape and mud", "Inspection request", "Electrical trim"],
+          };
+
+          return {
+            scheduleRiskAlert: alert,
+            notifications: [
+              {
+                id: `schedule-note-${Date.now()}`,
+                projectId,
+                createdAt: new Date().toISOString(),
+                title: "Schedule risk requires superintendent review",
+                body: "Constraint-aware schedule check proposed two revised inspection dates.",
+                severity: "Action required",
+                status: "sent",
+                recipientRoles: ["Superintendent"],
+                visibilityLevel: 1,
+                routeReason: "Drywall 80% action detected inspection dependency risk.",
+                ackRequired: false,
+                controlLevel: "recommendation requiring approval",
+              },
+              ...state.notifications.filter((notification) => notification.projectId !== projectId || notification.title !== "Schedule risk requires superintendent review"),
+            ],
+          };
+        }),
       acknowledgeNotification: (notificationId) =>
         set((state) => ({
           notifications: state.notifications.map((notification) =>
@@ -288,6 +350,7 @@ export const useDemoStore = create<DemoStore>()(
         threads: state.threads,
         voiceDecisionTrace: state.voiceDecisionTrace,
         lastVoiceTranscript: state.lastVoiceTranscript,
+        scheduleRiskAlert: state.scheduleRiskAlert,
         offlineMode: state.offlineMode,
       }),
     },
